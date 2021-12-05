@@ -1,12 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Image, Text, View , FlatList, Dimensions} from 'react-native';
+import { Button, StyleSheet, TouchableOpacity, Image, Text, View , FlatList, Dimensions} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {fetchImages} from '../actions/FetchImage';
 import { SearchBar } from 'react-native-elements';
+import {getFlickrImageURL} from '../Const'
 
-
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   
   const selctor = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -14,17 +13,7 @@ export default function HomeScreen() {
   const [isFetching, setIsFetching] = useState();
   const [searchString, setsearchString] = useState();
 
-  const getFlickrImageURL = (photo, size) => {
-    let url = `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${
-    photo.secret
-    }`;
-    if (size) {
-    // Configure image size
-    url += `_${size}`;
-    }
-    url += '.jpg';
-    return url;
-};
+  
 
   useEffect(() => {
     console.log('selctor', selctor.imagesReducer.images);
@@ -34,18 +23,6 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* <SearchBar
-          round
-          searchIcon={{ size: 24 }}
-          inputStyle={{backgroundColor: 'white'}}
-          containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5}}
-          inputContainerStyle={{backgroundColor: 'white'}}
-          onChangeText={text => setsearchString(text)}
-          // onClear={text => setsearchString('')}
-          placeholderTextColor={'#g5g5g5'}
-          placeholder={'Pritish Vaidya'}
-          value={setsearchString}
-        /> */}
         <View style={{width: '100%'}}>
         <SearchBar
         placeholder="Type Here..."
@@ -66,6 +43,11 @@ export default function HomeScreen() {
         renderItem = {({ item, index })=> 
           {
             return (
+              <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('DetailsScreen', item)
+              }}
+              >
               <View style={styles.imageContainer}>
                   <Image
                    style= {styles.imageBox}
@@ -73,6 +55,7 @@ export default function HomeScreen() {
                   />
                   <Text style={styles.imageTitle}>{item.title}</Text>
               </View>
+              </TouchableOpacity>
             );
           }
         }
